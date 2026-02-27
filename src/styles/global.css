@@ -4,6 +4,8 @@
   License MIT: https://github.com/HermanMartinus/bearblog/blob/master/LICENSE.md
  */
 
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+
 :root {
 	--accent: #31748f;
 	--accent-dark: #000d8a;
@@ -17,21 +19,24 @@
 		rgba(var(--gray), 33%);
 }
 @font-face {
-	font-family: "Atkinson";
-	src: url("/fonts/atkinson-regular.woff") format("woff");
+	font-family: "Montserrat", sans-serif;
+	/* font-family: "Atkinson"; */
+	/* src: url("/fonts/atkinson-regular.woff") format("woff"); */
 	font-weight: 400;
 	font-style: normal;
 	font-display: swap;
 }
 @font-face {
-	font-family: "Atkinson";
-	src: url("/fonts/atkinson-bold.woff") format("woff");
+	font-family: "Montserrat", sans-serif;
+	/* font-family: "Atkinson"; */
+	/* src: url("/fonts/atkinson-bold.woff") format("woff"); */
 	font-weight: 700;
 	font-style: normal;
 	font-display: swap;
 }
 body {
-	font-family: "Atkinson", sans-serif;
+	font-family: "Montserrat", sans-serif;
+	/* font-family: "Atkinson", sans-serif; */
 	margin: 0;
 	padding: 0;
 	text-align: left;
