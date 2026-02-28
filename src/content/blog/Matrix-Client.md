@@ -2,7 +2,7 @@
 title: "Matrix Client"
 description: "Development log of my matrix client!"
 pubDate: "February 27 2026"
-heroImage: "../../assets/blog-placeholder-1.jpg"
+heroImage: "../../../public/assets/matrix-logo.jpg"
 ---
 
 I've been working on a matrix client for quite a while, and I've recently started migrating it over to the rust sdk instead of essentially making my own library for it, which is much easier.
