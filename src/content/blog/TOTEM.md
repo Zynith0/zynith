@@ -14,3 +14,6 @@ whenever I hold down F or J, they act as shift. This allows me to type capital l
 I do sometimes accidentally activate the home row mods when I'm typing though, as I'm still getting used to them.
 
 I think I did a kinda decent soldering job, as everything worked first try except for two keys, which I have yet to fix.
+
+Overall this was a very fun project, and I'm really happy with the result!
+I'm also planning on designing own keyboard from scratch eventually.
