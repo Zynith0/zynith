@@ -11,7 +11,7 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
 	</head>
 	<body>
-		<Header />
+		<Header currentPath={Astro.url.pathname} />
 		<main>
 			<h1>Hello!</h1>
 			<p>
@@ -22,6 +22,8 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 				Feel free to check out my <a href="https://github.com/Zynith0">Github</a> to see what I'm working on.
 				I'm working on things almost every day, but a lot of them are private. My current biggest project is a 
 				matrix client.
+			</p>
+			<p>
 			</p>
 		</main>
 		<Footer />

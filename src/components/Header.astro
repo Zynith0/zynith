@@ -1,83 +1,553 @@
 ---
-import { SITE_TITLE } from '../consts';
-import HeaderLink from './HeaderLink.astro';
+// BlogNavbar.astro
+// Usage: <BlogNavbar currentPath={Astro.url.pathname} />
+// const { currentPath = "/" } = Astro.props;
+const { currentPath: rawPath } = Astro.props;
+const currentPath = (rawPath ?? Astro.url.pathname).replace(/\/$/, "") || "/zynith";
+
+const links = [
+{ href: "/zynith",         label: "Home"    },
+{ href: "/zynith/blog",    label: "Posts"   },
+{ href: "/zynith/topics",  label: "Topics"  },
+{ href: "/zynith/about",   label: "About"   },
+];
 ---
 
-<header>
-	<nav>
-		<a href="/zynith/"><img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Frosepinetheme.com%2Fassets%2Flogo-main.png&f=1&nofb=1&ipt=8350d65119e07abb8405baafdbbf3a90c161d647cd6699fe33fbb2e1f20715de" id="nav-img"></img></a>
-		<div class="internal-links">
-			<HeaderLink href="/zynith/">Home</HeaderLink>
-			<HeaderLink href="/zynith/blog">Blog</HeaderLink>
-			<HeaderLink href="/zynith/about">About</HeaderLink>
-		</div>
-		<div class="social-links">
-			<a href="https://github.com/Zynith0" target="_blank">
-				<span class="sr-only">Go to my Github page!</span>
-				<svg viewBox="0 0 16 16" aria-hidden="true" width="32" height="32"
-					><path
-						fill="currentColor"
-						d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"
-					></path></svg
-				>
+<header class="navbar" id="navbar">
+	<div class="nav-inner">
+
+		<!-- Logo / Blog name -->
+		<a href="/zynith" class="logo" aria-label="Go home">
+			<span class="logo-blossom" aria-hidden="true">✿</span>
+			<span class="logo-name">zynith</span>
+		</a>
+
+		<!-- Desktop nav -->
+		<nav aria-label="Main navigation">
+			<ul class="nav-links" role="list">
+				{links.map(({ href, label }) => (
+				<li>
+					<a
+						href={href}
+							class:list={["nav-link", { "is-active": currentPath === href }]}
+							>
+							{label}
+					</a>
+				</li>
+				))}
+			</ul>
+		</nav>
+
+		<!-- Right side: search + RSS -->
+		<div class="nav-actions">
+			<button class="icon-btn" id="search-btn" aria-label="Search">
+				<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+					<circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.4"/>
+					<path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+				</svg>
+			</button>
+			<a href="/rss.xml" class="icon-btn" aria-label="RSS Feed">
+				<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+					<circle cx="3" cy="13" r="1.5" fill="currentColor"/>
+					<path d="M2 9.5C5.59 9.5 8.5 12.41 8.5 16" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+					<path d="M2 5C7.8 5 12.5 9.7 12.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+				</svg>
 			</a>
+			<!-- Mobile hamburger -->
+			<button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
+				<svg class="icon-menu" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+					<line x1="2" y1="5"  x2="16" y2="5"  stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+					<line x1="2" y1="9"  x2="16" y2="9"  stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+					<line x1="2" y1="13" x2="16" y2="13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+				</svg>
+				<svg class="icon-close" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+					<line x1="3" y1="3" x2="15" y2="15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+					<line x1="15" y1="3" x2="3" y2="15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+				</svg>
+			</button>
 		</div>
-	</nav>
+	</div>
+
+	<!-- Search bar (slides in) -->
+	<div class="search-bar" id="search-bar" aria-hidden="true">
+		<label for="search-input" class="sr-only">Search posts</label>
+		<input
+				id="search-input"
+					type="search"
+					placeholder="Search posts, topics…"
+					autocomplete="off"
+					/>
+					<kbd>esc</kbd>
+					<ul class="search-results" id="search-results" role="listbox" aria-label="Search results"></ul>
+	</div>
+
+	<!-- Mobile drawer -->
+	<div class="mobile-drawer" id="mobile-drawer" aria-hidden="true">
+		<ul role="list">
+			{links.map(({ href, label }) => (
+			<li>
+				<a
+					href={href}
+						class:list={["drawer-link", { "is-active": currentPath === href }]}
+						>
+						{label}
+				</a>
+			</li>
+			))}
+		</ul>
+		<div class="drawer-footer">
+			<a href="/rss.xml" class="drawer-rss">RSS Feed ↗</a>
+		</div>
+	</div>
 </header>
+
 <style>
-	header {
-		margin: 0;
-		padding: 0 1em;
-		border-radius: 0px 0px 12px 12px;
-		background: #26233a; 
-		box-shadow: 0 2px 8px rgba(var(--white), 5%);
-	}
-	h2 {
-		margin: 0;
-		font-size: 1em;
+	@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Fira+Code:wght@400;500&display=swap');
+
+	/* ── Rosé Pine palette ───────────────────────── */
+	:root {
+		--rp-base:      #191724;
+		--rp-surface:   #1f1d2e;
+		--rp-overlay:   #26233a;
+		--rp-muted:     #6e6a86;
+		--rp-subtle:    #908caa;
+		--rp-text:      #e0def4;
+		--rp-love:      #eb6f92;
+		--rp-gold:      #f6c177;
+		--rp-rose:      #ebbcba;
+		--rp-pine:      #31748f;
+		--rp-foam:      #9ccfd8;
+		--rp-iris:      #c4a7e7;
+		--rp-hl-low:    #21202e;
+		--rp-hl-med:    #403d52;
+		--rp-hl-high:   #524f67;
+
+		--nav-height:   62px;
+		--font-serif:   'Lora', Georgia, serif;
+		--font-mono:    'Fira Code', monospace;
+		--radius:       6px;
+		--transition:   0.22s ease;
 	}
 
-	h2 a,
-	h2 a.active {
-		text-decoration: none;
-	}
-	nav {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-	}
-	nav a {
-		padding: 1em 0.5em;
-		color: #e0def4;
-		border-bottom: 4px solid transparent;
-		text-decoration: none;
-		transition: all 0.2s ease-in-out;
-	}
-	nav a:hover {
-		scale: 115%;
-	}
-	nav a.active {
-		text-decoration: none;
-		border-color: var(--accent);
-	}
-	.social-links,
-	.social-links a {
-		display: flex;
-	}
-	@media (max-width: 720px) {
-		.social-links {
-			display: none;
-		}
-	}
+	/* ── Reset / base ────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-	#nav-img {
-		display: flex;
-		max-width: 40px;
-		max-height: auto;
-		transition: all 0.2s ease-in-out;
-	}
+.sr-only {
+	position: absolute; width: 1px; height: 1px;
+	padding: 0; margin: -1px; overflow: hidden;
+	clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
 
-	#nav-img:hover {
-		scale: 115%;
-	}
+  /* ── Navbar shell ────────────────────────────── */
+  .navbar {
+	  position: fixed;
+	  inset-block-start: 0;
+	  inset-inline: 0;
+	  z-index: 100;
+	  background: rgba(25, 23, 36, 0.82);
+	  border-bottom: 1px solid var(--rp-hl-low);
+	  backdrop-filter: blur(18px) saturate(140%);
+	  -webkit-backdrop-filter: blur(18px) saturate(140%);
+	  transition: background var(--transition), border-color var(--transition);
+  }
+
+  .navbar.scrolled {
+	  background: rgba(25, 23, 36, 0.96);
+	  border-color: var(--rp-hl-med);
+  }
+
+  /* ── Inner layout ────────────────────────────── */
+  .nav-inner {
+	  display: flex;
+	  align-items: center;
+	  justify-content: space-between;
+	  max-width: 860px;
+	  margin: 0 auto;
+	  padding: 0 1.5rem;
+	  height: var(--nav-height);
+	  gap: 1.5rem;
+  }
+
+  /* ── Logo ────────────────────────────────────── */
+  .logo {
+	  display: flex;
+	  align-items: center;
+	  gap: 0.5rem;
+	  text-decoration: none;
+	  flex-shrink: 0;
+  }
+
+  .logo-blossom {
+	  color: var(--rp-love);
+	  font-size: 1.1rem;
+	  line-height: 1;
+	  display: inline-block;
+	  transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1);
+  }
+
+  .logo:hover .logo-blossom {
+	  transform: rotate(72deg) scale(1.15);
+  }
+
+  .logo-name {
+	  font-family: var(--font-serif);
+	  font-style: italic;
+	  font-weight: 400;
+	  font-size: 1.08rem;
+	  color: var(--rp-text);
+	  letter-spacing: 0.01em;
+	  white-space: nowrap;
+  }
+
+  /* ── Nav links ───────────────────────────────── */
+  .nav-links {
+	  display: flex;
+	  align-items: center;
+	  gap: 0.1rem;
+	  list-style: none;
+  }
+
+  .nav-link {
+	  font-family: var(--font-mono);
+	  font-size: 0.75rem;
+	  font-weight: 500;
+	  color: var(--rp-subtle);
+	  text-decoration: none;
+	  letter-spacing: 0.03em;
+	  padding: 0.4rem 0.8rem;
+	  border-radius: var(--radius);
+	  position: relative;
+	  transition: color var(--transition), background var(--transition);
+  }
+
+  .nav-link:hover {
+	  color: var(--rp-text);
+	  background: var(--rp-hl-low);
+  }
+
+  .nav-link.is-active {
+	  color: var(--rp-rose);
+	  background: var(--rp-hl-low);
+  }
+
+  /* blooming dot under active link */
+  .nav-link.is-active::after {
+	  content: '';
+	  position: absolute;
+	  bottom: 3px;
+	  left: 50%;
+	  transform: translateX(-50%);
+	  width: 3px;
+	  height: 3px;
+	  border-radius: 50%;
+	  background: var(--rp-love);
+  }
+
+  /* ── Actions ─────────────────────────────────── */
+  .nav-actions {
+	  display: flex;
+	  align-items: center;
+	  gap: 0.25rem;
+	  flex-shrink: 0;
+  }
+
+  .icon-btn {
+	  display: inline-flex;
+	  align-items: center;
+	  justify-content: center;
+	  width: 34px;
+	  height: 34px;
+	  border-radius: var(--radius);
+	  border: none;
+	  background: transparent;
+	  color: var(--rp-muted);
+	  cursor: pointer;
+	  transition: color var(--transition), background var(--transition);
+	  text-decoration: none;
+  }
+
+  .icon-btn:hover {
+	  color: var(--rp-foam);
+	  background: var(--rp-hl-low);
+  }
+
+  /* ── Search bar ──────────────────────────────── */
+  .search-bar {
+	  display: flex;
+	  align-items: center;
+	  gap: 0.75rem;
+	  max-width: 860px;
+	  margin: 0 auto;
+	  padding: 0 1.5rem;
+	  overflow: hidden;
+	  max-height: 0;
+	  opacity: 0;
+	  transition: max-height 0.3s ease, opacity 0.25s ease, padding 0.3s ease;
+	  padding-block: 0;
+  }
+
+  .search-bar.open {
+	  max-height: 60px;
+	  opacity: 1;
+	  padding-block: 0.65rem;
+	  border-top: 1px solid var(--rp-hl-low);
+  }
+
+  #search-input {
+	  flex: 1;
+	  background: var(--rp-overlay);
+	  border: 1px solid var(--rp-hl-med);
+	  border-radius: var(--radius);
+	  color: var(--rp-text);
+	  font-family: var(--font-mono);
+	  font-size: 0.82rem;
+	  padding: 0.45rem 0.8rem;
+	  outline: none;
+	  transition: border-color var(--transition);
+  }
+
+  #search-input::placeholder { color: var(--rp-muted); }
+  #search-input:focus { border-color: var(--rp-iris); }
+
+  kbd {
+	  font-family: var(--font-mono);
+	  font-size: 0.7rem;
+	  color: var(--rp-muted);
+	  border: 1px solid var(--rp-hl-med);
+	  border-radius: 3px;
+	  padding: 0.1rem 0.4rem;
+	  white-space: nowrap;
+	  flex-shrink: 0;
+  }
+
+  /* ── Hamburger ───────────────────────────────── */
+  .hamburger {
+	  display: none;
+	  align-items: center;
+	  justify-content: center;
+	  width: 34px;
+	  height: 34px;
+	  border-radius: var(--radius);
+	  border: none;
+	  background: transparent;
+	  color: var(--rp-subtle);
+	  cursor: pointer;
+	  transition: color var(--transition), background var(--transition);
+  }
+
+  .hamburger:hover { color: var(--rp-text); background: var(--rp-hl-low); }
+
+  .icon-close { display: none; }
+  .hamburger.open .icon-menu  { display: none; }
+  .hamburger.open .icon-close { display: block; }
+
+  /* ── Mobile drawer ───────────────────────────── */
+  .mobile-drawer {
+	  display: none;
+	  overflow: hidden;
+	  max-height: 0;
+	  opacity: 0;
+	  border-top: 1px solid transparent;
+	  transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1),
+	  opacity 0.3s ease,
+	  border-color 0.3s ease;
+  }
+
+  .mobile-drawer.open {
+	  max-height: 400px;
+	  opacity: 1;
+	  border-color: var(--rp-hl-low);
+  }
+
+  .mobile-drawer ul {
+	  list-style: none;
+	  padding: 0.75rem 1.5rem 0;
+  }
+
+  .drawer-link {
+	  display: block;
+	  font-family: var(--font-mono);
+	  font-size: 0.82rem;
+	  color: var(--rp-subtle);
+	  text-decoration: none;
+	  padding: 0.65rem 0;
+	  border-bottom: 1px solid var(--rp-hl-low);
+	  transition: color var(--transition), padding-left var(--transition);
+  }
+
+  .drawer-link:hover  { color: var(--rp-text);  padding-left: 0.4rem; }
+  .drawer-link.is-active { color: var(--rp-rose); }
+
+  .drawer-footer {
+	  padding: 1rem 1.5rem 1.25rem;
+  }
+
+  .drawer-rss {
+	  font-family: var(--font-mono);
+	  font-size: 0.72rem;
+	  color: var(--rp-pine);
+	  text-decoration: none;
+	  border-bottom: 1px dashed var(--rp-pine);
+	  transition: color var(--transition);
+  }
+
+  .drawer-rss:hover { color: var(--rp-foam); border-color: var(--rp-foam); }
+
+  /* ── Responsive ──────────────────────────────── */
+  @media (max-width: 640px) {
+	  .nav-links { display: none; }
+	  .hamburger { display: inline-flex; }
+	  .mobile-drawer { display: block; }
+  }
+
+  .search-results {
+	  position: absolute;
+	  top: calc(var(--nav-height) + 52px);
+	  left: 50%;
+	  transform: translateX(-50%);
+	  width: min(560px, calc(100vw - 3rem));
+	  background: var(--rp-surface);
+	  border: 1px solid var(--rp-hl-med);
+	  border-radius: var(--radius);
+	  list-style: none;
+	  overflow: hidden;
+	  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+	  z-index: 200;
+  }
+
+  .search-results:empty { display: none; }
+
+  .search-result-item a {
+	  display: flex;
+	  flex-direction: column;
+	  gap: 0.2rem;
+	  padding: 0.75rem 1rem;
+	  text-decoration: none;
+	  border-bottom: 1px solid var(--rp-hl-low);
+	  transition: background 0.15s ease;
+  }
+
+  .search-result-item a:hover { background: var(--rp-overlay); }
+
+  .result-title {
+	  font-family: var(--font-serif);
+	  font-size: 0.9rem;
+	  color: var(--rp-text);
+  }
+
+  .result-excerpt {
+	  font-family: var(--font-mono);
+	  font-size: 0.72rem;
+	  color: var(--rp-muted);
+	  white-space: nowrap;
+	  overflow: hidden;
+	  text-overflow: ellipsis;
+  }
 </style>
+
+<script>
+	const navbar      = document.getElementById('navbar');
+	const hamburger   = document.getElementById('hamburger');
+	const drawer      = document.getElementById('mobile-drawer');
+	const searchBtn   = document.getElementById('search-btn');
+	const searchBar   = document.getElementById('search-bar');
+	const searchInput = document.getElementById('search-input') as HTMLInputElement | null;
+
+	// Scroll shadow
+	window.addEventListener('scroll', () => {
+		navbar?.classList.toggle('scrolled', window.scrollY > 10);
+	}, { passive: true });
+
+	// Mobile drawer
+	hamburger?.addEventListener('click', () => {
+		const open = hamburger.classList.toggle('open');
+		drawer?.classList.toggle('open', open);
+		hamburger.setAttribute('aria-expanded', String(open));
+		drawer?.setAttribute('aria-hidden', String(!open));
+	});
+
+	// Close drawer on nav
+	drawer?.querySelectorAll('a').forEach(a => {
+		a.addEventListener('click', () => {
+			hamburger?.classList.remove('open');
+			drawer.classList.remove('open');
+		});
+	});
+
+	// Search toggle
+	// searchBtn?.addEventListener('click', () => {
+	//  const open = searchBar?.classList.toggle('open');
+	//  searchBar?.setAttribute('aria-hidden', String(!open));
+	//  if (open) setTimeout(() => searchInput?.focus(), 50);
+	// });
+
+	let searchIndex: any[] = [];
+	let indexLoaded = false;
+
+	async function loadIndex() {
+		if (indexLoaded) return;
+		const res = await fetch('/search.json');
+		searchIndex = await res.json();
+		indexLoaded = true;
+	}
+
+	function searchPosts(query: string) {
+		const q = query.toLowerCase().trim();
+		if (!q) return [];
+
+		return searchIndex
+			.filter(post =>
+				post.title.toLowerCase().includes(q) ||
+				post.description.toLowerCase().includes(q) ||
+				post.body.toLowerCase().includes(q) ||
+				post.tags.some((t: string) => t.toLowerCase().includes(q))
+			)
+			.slice(0, 5);
+	}
+
+	// Load index when search opens
+	searchBtn?.addEventListener('click', async () => {
+		const open = searchBar?.classList.toggle('open');
+		searchBar?.setAttribute('aria-hidden', String(!open));
+		if (open) {
+			await loadIndex();
+			setTimeout(() => searchInput?.focus(), 50);
+		}
+	});
+
+	// Search on input
+	let debounceTimer: ReturnType<typeof setTimeout>;
+	searchInput?.addEventListener('input', () => {
+		clearTimeout(debounceTimer);
+		debounceTimer = setTimeout(() => {
+			const results = searchPosts(searchInput.value);
+			renderResults(results);
+		}, 150);
+	});
+
+	const resultsEl = document.getElementById('search-results');
+
+	function renderResults(results: any[]) {
+		if (!resultsEl) return;
+		if (!results.length) {
+			resultsEl.innerHTML = `<li style="padding:0.75rem 1rem;font-family:var(--font-mono);font-size:0.78rem;color:var(--rp-muted)">No results found</li>`;
+			return;
+		}
+		resultsEl.innerHTML = results.map(r => `
+	<li class="search-result-item">
+	  <a href="${r.url}">
+		<span class="result-title">${r.title}</span>
+		<span class="result-excerpt">${r.description}</span>
+	  </a>
+	</li>
+  `).join('');
+	}
+
+	// Close search on Escape
+	document.addEventListener('keydown', e => {
+		if (e.key === 'Escape' && searchBar?.classList.contains('open')) {
+			searchBar.classList.remove('open');
+			searchBar.setAttribute('aria-hidden', 'true');
+		}
+	});
+</script>
